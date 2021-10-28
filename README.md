@@ -40,7 +40,7 @@ A basic scheme of the wavelet decomposition is presented next:
 
 * [1] [J.Bobin, J.-L. Starck, Y.Moudden, J. Fadili, Blind Source Separation: the Sparsity Revolution](http://jbobin.cosmostat.org/docs/aiep08.pdf)
 * [2] [B. Asfari, R. Tron, R. Vidal. On The Convergence of Gradient Descent for Finding the Riemannian Center of Mass.](https://arxiv.org/pdf/1201.0925.pdf)
-* [3] [C.Kervazo, T.Liaudat, J.Bobin. Faster and better sparse blind source separation through mini-batch optimizatio.](https://hal.archives-ouvertes.fr/hal-02426991)
+* [3] [C.Kervazo, T.Liaudat, J.Bobin. Faster and better sparse blind source separation through mini-batch optimization.](https://hal.archives-ouvertes.fr/hal-02426991)
 
 ## Testing
 
