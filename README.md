@@ -42,14 +42,13 @@ A basic scheme of the wavelet decomposition is presented next:
 * [2] [B. Asfari, R. Tron, R. Vidal. On The Convergence of Gradient Descent for Finding the Riemannian Center of Mass.](https://arxiv.org/pdf/1201.0925.pdf)
 * [3] [C.Kervazo, T.Liaudat, J.Bobin. Faster and better sparse blind source separation through mini-batch optimization.](https://hal.archives-ouvertes.fr/hal-02426991)
 
+## Setting things up
+
+To use the python/C++ binders, it is important to compile the codes available in the src folder. For that purpose, you need to have boost python and boost numpy properly set up. This will be updated soon with a more convenient distributed implementation.
+
 ## Testing
 
-*(Up to now)* There are two main tests *test_basic* and *test_basic_synthetic_data*. Each test comes as a python code as well as in a jupyter notebook.
-
-In the first one the observations are generated using a Generalized Gaussian model with a given beta parameter. The test solves the BSS problem for different batch sizes.
-
-The second one uses a dataset of realistic astrophysical observations (*sent upon request due to size ~170Mb*). The wavelet decomposition is used for this dataset as the astrophysical images are not sparse on the direct domain.
-
+*(Up to now)* There is a jupyter notebook (notebooks folder) with an application to generalized gaussian sources - more to come soon
 
 #### Acknowledgements
-The work was done by **Tobias Liaudat** in an internship at the [CosmoStat Laboratory](http://www.cosmostat.org/) at the [CEA-Saclay](http://www.cea.fr/) under the supervision of **Jérôme Bobin**.
+The work was done by **Christophe Kervazo**, **Tobias Liaudat** and **Jérôme Bobin**.

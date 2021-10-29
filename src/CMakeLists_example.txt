@@ -1,0 +1,121 @@
+cmake_minimum_required(VERSION 2.8)
+
+include(ExternalProject)
+include(FindPkgConfig)
+
+# Adding customized cmake module
+list(APPEND CMAKE_MODULE_PATH  "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
+project(sparse2d)
+
+# Find required packages
+# find_package(Boost REQUIRED COMPONENTS python)
+
+find_package(PythonInterp 3.6 REQUIRED)
+find_package(PythonLibsNew 3.6 REQUIRED)
+find_package(OpenMP)
+
+#set(CC gcc-8)
+#set(CXX g++-8)
+
+set (INSTALL_DIR /Users/jbobin/Documents/Python/LENA_DEVL/Toolbox/pyWrappers/MacWrappers/BSS_Box_py3) # TO BE UPDATED WITH THE RIGHT PATH
+set(Boost_ROOT /Users/jbobin/Documents/ThirdParty/boost_1_67_0)  # TO BE UPDATED WITH THE RIGHT PATH
+
+#set(Python_ROOT /Users/jbobin/LenaPy36)
+
+# PYTHON INFO
+#set(PYTHON_INCLUDE_DIRS ${Python_ROOT}/include/python3.6m/)
+#set(PYTHON_LIBRARIES ${Python_ROOT}/lib/)
+
+# BOOST INFO
+set(Boost_INCLUDE_DIRS ${Boost_ROOT}/)
+set(Boost_LIBRARIES /usr/local/lib/libboost_python36.dylib)
+add_definitions(-DBOOST_PYTHON_STATIC_LIB)
+
+# BOOST-PYTHON INFO
+
+set(BoostNumpy_INCLUDE_DIRS ${Boost_ROOT}/boost/)
+set(BoostNumpy_LIBRARY_DIRS /usr/local/lib/)
+set(BoostNumpy_LIBRARIES /usr/local/lib/libboost_numpy36.dylib)
+
+message( STATUS "  " )
+message( STATUS " COMPILER INFO " )
+message( STATUS " -------------- " )
+message( STATUS "C COMPILER=${CMAKE_C_COMPILER}" )
+message( STATUS "OpenMP FOUND =${OpenMP_CXX_FOUND}" )
+message( STATUS "OpenMP LIBS=${OpenMP_CXX_LIBRARIES}" )
+message( STATUS "OpenMP FLAGS=${OpenMP_CXX_FLAGS}" )
+message( STATUS "  " )
+message( STATUS " PYTHON " )
+message( STATUS " -------------- " )
+message( STATUS "Python Lib ${PYTHON_LIBRARIES}" )
+message( STATUS "Python Inc ${PYTHON_INCLUDE_DIRS}" )
+message( STATUS "  " )
+message( STATUS " BOOST " )
+message( STATUS " -------------- " )
+message( STATUS "Boost Lib ${Boost_LIBRARIES}" )
+message( STATUS "Boost Inc ${Boost_INCLUDE_DIRS}" )
+message( STATUS "  " )
+message( STATUS " BOOST-NUMPY " )
+message( STATUS " -------------- " )
+message( STATUS "Boost-numpy Lib ${BoostNumpy_LIBRARIES}" )
+message( STATUS "Boost-numpy Inc ${BoostNumpy_INCLUDE_DIRS}" )
+message( STATUS "  " )
+
+if(APPLE)
+    set(CMAKE_MACOSX_RPATH 1)
+endif(APPLE)
+
+# Define include and library directories
+include_directories(
+  ${PYTHON_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+  ${BoostNumpy_INCLUDE_DIRS}
+)
+
+link_directories(${BoostNumpy_LIBRARY_DIRS})
+
+set(CC gcc)
+set(CXX g++)
+
+set(Boost_USE_STATIC_LIBS        ON) # only find static libs
+set(Boost_USE_MULTITHREADED      ON)
+
+# Compilation flags
+
+set(CMAKE_CXX_FLAGS "-O3 -fomit-frame-pointer -fno-common -fPIC ${OpenMP_CXX_FLAGS}")  # TO BE UPDATED BASED ON THE ARCH
+
+# DecG
+add_library(decG SHARED decG/cxx/decG.cpp decG/cxx/decG_utils.cpp)
+add_dependencies(decG BoostNumpy)
+target_link_libraries(decG ${BoostNumpy_LIBRARIES} ${Boost_LIBRARIES} ${GSL_LIBRARIES} ${PYTHON_LIBRARIES})
+set_target_properties(decG PROPERTIES SUFFIX .so)
+set_target_properties(decG PROPERTIES PREFIX "")
+
+# sparse2d
+add_library(sparse2d SHARED sparse2d/cxx/sparse2d.cpp sparse2d/cxx/starlet2d.cpp)
+add_dependencies(sparse2d BoostNumpy)
+target_link_libraries(sparse2d ${BoostNumpy_LIBRARIES} ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+set_target_properties(sparse2d PROPERTIES SUFFIX .so)
+set_target_properties(sparse2d PROPERTIES PREFIX "")
+
+# gmca
+add_library(gmca SHARED gmca/cxx/gmca.cpp gmca/cxx/matrix_utils_omp.cpp)
+add_dependencies(gmca BoostNumpy)
+target_link_libraries(gmca ${BoostNumpy_LIBRARIES} ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+set_target_properties(gmca PROPERTIES SUFFIX .so)
+set_target_properties(gmca PROPERTIES PREFIX "")
+
+# mani_utils
+add_library(maniutils SHARED maniMR/cxx/MRM2D.cpp maniMR/cxx/mani_utils.cpp)
+add_dependencies(maniutils BoostNumpy)
+target_link_libraries(maniutils ${BoostNumpy_LIBRARIES} ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+set_target_properties(maniutils PROPERTIES SUFFIX .so)
+set_target_properties(maniutils PROPERTIES PREFIX "")
+
+# INSTALLATION
+
+install(TARGETS sparse2d DESTINATION ${INSTALL_DIR}/modules)
+install(TARGETS decG DESTINATION ${INSTALL_DIR}/modules)
+install(TARGETS gmca DESTINATION ${INSTALL_DIR}/modules)
+install(TARGETS maniutils DESTINATION ${INSTALL_DIR}/modules)
